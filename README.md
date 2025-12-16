@@ -371,5 +371,3 @@ Antes de considerar una tarea completa:
 Estos templates son de código abierto y pueden usarse libremente en proyectos personales o comerciales.
 
 ---
-
-**Creado con ❤️ usando Specification-Driven Development**
