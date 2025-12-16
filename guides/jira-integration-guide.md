@@ -16,10 +16,12 @@
 2. [Conceptos Clave](#conceptos-clave)
 3. [Configuración de Jira](#configuración-de-jira)
 4. [Workflow SDD + Dual Track](#workflow-sdd--dual-track)
-5. [Mejores Prácticas](#mejores-prácticas)
-6. [Múltiples Desarrolladores](#múltiples-desarrolladores)
-7. [Restricciones y Limitaciones](#restricciones-y-limitaciones)
-8. [Checklist de Implementación](#checklist-de-implementación)
+5. [Mejores Prácticas para Historias, Épicas, Tareas y Bugs](#-mejores-prácticas-para-historias-épicas-tareas-y-bugs--best-practices-for-stories-epics-tasks--bugs)
+6. [Mejores Prácticas General](#mejores-prácticas--best-practices)
+7. [Múltiples Desarrolladores](#múltiples-desarrolladores)
+8. [Restricciones y Limitaciones](#restricciones-y-limitaciones)
+9. [Checklist de Implementación](#checklist-de-implementación)
+10. **[Referencia: Best Practices Detalladas](best-practices-issues.md)** - Guía completa separada
 
 ---
 
@@ -364,18 +366,860 @@ FASE 3: VALIDACIÓN Y DEPLOYMENT (Track 3)
 
 ---
 
-## 🏆 Mejores Prácticas / Best Practices
+## � Mejores Prácticas para Historias, Épicas, Tareas y Bugs / Best Practices for Stories, Epics, Tasks & Bugs
+
+### Anatomía de Cada Tipo de Issue
+
+#### 1️⃣ ÉPICAS / Epics
+
+**¿Qué es?**
+
+- Contenedor de múltiples historias relacionadas
+- Representa una iniciativa o capacidad de negocio completa
+- Tiempo de vida: Semanas a meses
+- Scope: Grande (20+ puntos de historia)
+
+**Cuándo Crear:**
+
+```
+✅ CREAR ÉPICA CUANDO:
+   - Iniciativa estratégica de negocio
+   - Múltiples historias relacionadas (3+)
+   - Timeline: 2+ sprints
+   - Stakeholders principales interesados
+
+❌ NO CREAR SI:
+   - Solo 1-2 historias
+   - Tarea one-off
+   - Menos de 1 semana de trabajo
+```
+
+**Estructura Recomendada:**
+
+```markdown
+# ECOM-1 - User Management System
+
+## 📋 Descripción / Description
+
+Implementar sistema completo de gestión de usuarios incluyendo
+registro, login, perfil y autenticación.
+
+**Objetivo de Negocio**:
+Permitir que usuarios se registren y gestionen sus cuentas de forma segura.
+
+**Beneficio**:
+Aumentar adopción de plataforma, permitir personalización por usuario.
+
+## 🎯 Alcance / Scope
+
+- [ ] User registration with email verification
+- [ ] Login/logout with JWT tokens
+- [ ] Password reset via email
+- [ ] User profile management
+- [ ] Role-based access control (RBAC)
+- [ ] Social login (future phase, out of scope)
+
+## 📊 Estimación
+
+- **Effort**: 40 story points (8 sprints)
+- **Duration**: 8-10 semanas
+- **Team Size**: 3-4 developers
+- **Dependencies**: Database setup, Email service
+
+## 📚 Especificación Vinculada / Linked Specification
+
+- **Requirements**: [docs/01-requirements.md#user-management](link)
+- **Architecture**: [docs/02-architecture.md#auth-layer](link)
+- **Data Models**: [docs/02-architecture.md#data-models](link)
+
+## ✅ Definition of Done (Epic)
+
+- [ ] Todas las historias child completadas
+- [ ] Especificación completamente documentada
+- [ ] Arquitectura aprobada por Tech Lead
+- [ ] 80%+ test coverage en todas las historias
+- [ ] Documentación actualizada (API docs, user guide)
+- [ ] Deployed a producción exitosamente
+- [ ] Monitoring configurado
+
+## 📈 Aceptación de Negocio
+
+- [ ] Product Owner revisó y aprobó
+- [ ] Stakeholders validaron funcionalidad
+- [ ] Metrics: X% aumento en adopción
+
+## 🔗 Child Stories
+
+- ECOM-10: Implement user registration
+- ECOM-11: Implement login/logout
+- ECOM-12: Implement password reset
+- ECOM-13: Implement user profiles
+- ECOM-14: Implement RBAC
+
+## 📝 Notas
+
+- Prioridad: ALTA - Bloqueador para otras épicas
+- Riesgos: Integración de email, performance con muchos usuarios
+- Dependencias: INFRA-5 (Database), INFRA-6 (Email service)
+```
+
+**Flujo de Épica:**
+
+```
+┌──────────────────────────────────────────┐
+│ EPIC LIFECYCLE                           │
+├──────────────────────────────────────────┤
+│                                          │
+│ 1. PLANNING (Semana anterior)            │
+│    ├─ PM define objetivo de negocio      │
+│    ├─ Tech Lead estima esfuerzo          │
+│    ├─ Crear en Jira con descripción      │
+│    └─ Status: TODO                       │
+│                                          │
+│ 2. DISCOVERY (Track 1)                   │
+│    ├─ Crear subtareas de análisis        │
+│    ├─ Escribir especificación            │
+│    ├─ Diseñar arquitectura               │
+│    ├─ Stakeholder review                 │
+│    └─ Status: SPEC_APPROVED              │
+│                                          │
+│ 3. REFINEMENT                            │
+│    ├─ Crear historias child detalladas   │
+│    ├─ Estimación de cada historia        │
+│    ├─ Asignar a sprints                  │
+│    └─ Status: READY_FOR_DEVELOPMENT      │
+│                                          │
+│ 4. IMPLEMENTATION (Track 2)              │
+│    ├─ Desarrolladores implementan        │
+│    ├─ Code reviews                       │
+│    ├─ Testing                            │
+│    └─ Status: IN_DEVELOPMENT             │
+│                                          │
+│ 5. VALIDATION (Track 3)                  │
+│    ├─ QA testing completo                │
+│    ├─ Performance testing                │
+│    ├─ Deployment a staging               │
+│    └─ Status: READY_FOR_PRODUCTION       │
+│                                          │
+│ 6. DEPLOYMENT                            │
+│    ├─ Production deployment              │
+│    ├─ Monitoring setup                   │
+│    ├─ Post-deployment validation         │
+│    └─ Status: DONE ✅                    │
+│                                          │
+│ 7. POST-RELEASE (Optional)               │
+│    ├─ Retrospective                      │
+│    ├─ Performance analysis               │
+│    ├─ Lessons learned                    │
+│    └─ Status: CLOSED                     │
+│                                          │
+└──────────────────────────────────────────┘
+```
+
+---
+
+#### 2️⃣ HISTORIAS / Stories (User Stories)
+
+**¿Qué es?**
+
+- Funcionalidad específica desde perspectiva del usuario
+- Tamaño mediano: 5-13 puntos de historia
+- Completable en 2-4 días de trabajo
+- Child de una Épica
+
+**Cuándo Crear:**
+
+```
+✅ CREAR HISTORIA CUANDO:
+   - Feature visible al usuario final
+   - Valor de negocio claro
+   - Puede completarse en un sprint
+   - Aceptación criterios bien definidos
+
+❌ NO CREAR SI:
+   - Tarea técnica pura (→ Task)
+   - Problema existente (→ Bug)
+   - Muy pequeño (→ Subtask)
+   - Muy grande (→ Epic)
+```
+
+**Formato Recomendado (Gherkin):**
+
+````markdown
+# ECOM-10 - Implement User Registration
+
+## 📖 Historia de Usuario / User Story
+
+Como **usuario nuevo**
+Quiero **registrarme con email y contraseña**
+Para que **pueda crear una cuenta y acceder a la plataforma**
+
+## 🎯 Acceptance Criteria
+
+### Scenario 1: Registro exitoso con datos válidos
+
+```gherkin
+Given Estoy en la página de registro
+When Ingreso email "user@example.com"
+  And Ingreso contraseña "SecurePass123!"
+  And Hago clic en "Registrarse"
+Then Debería ver mensaje "Registro exitoso"
+  And Debería ser redirigido a página de login
+  And Email de verificación debería ser enviado
+```
+````
+
+### Scenario 2: Email ya registrado
+
+```gherkin
+Given El email "existing@example.com" ya está registrado
+When Intento registrarme con ese email
+Then Debería ver error "Este email ya está registrado"
+  And No debería crear la cuenta
+```
+
+### Scenario 3: Contraseña débil
+
+```gherkin
+Given Estoy en página de registro
+When Intento ingresar contraseña "weak"
+Then Debería ver error "Contraseña muy débil"
+  And Debería mostrar requisitos: 8+ chars, mayúscula, número
+```
+
+### Scenario 4: Campos requeridos
+
+```gherkin
+Given Estoy en página de registro
+When Intento enviar sin completar campos
+Then Debería mostrar errores en campos vacíos
+  And Botón "Registrarse" debería estar deshabilitado
+```
+
+## 📊 Información de la Historia
+
+| Campo            | Valor                           |
+| ---------------- | ------------------------------- |
+| **Epic Link**    | ECOM-1 - User Management System |
+| **Story Points** | 8                               |
+| **Priority**     | HIGH                            |
+| **Type**         | Story                           |
+| **Sprint**       | Sprint 1                        |
+| **Assignee**     | dev-alice@company.com           |
+
+## 📚 Especificación Técnica
+
+**Archivo SDD**: [docs/02-architecture.md#auth-registration](link)
+
+**Endpoints**:
+
+- `POST /api/auth/register` - Create new user account
+- `GET /api/auth/verify-email/{token}` - Verify email
+
+**Database**:
+
+- Table: `users`
+- Fields: id, email, password_hash, created_at, verified_at
+- Constraint: unique(email)
+
+**Security**:
+
+- Use bcrypt for password hashing (cost factor: 12)
+- Rate limit: 5 registrations per IP per hour
+- Email verification token expires: 24 hours
+
+## ✅ Definition of Done (Story)
+
+- [ ] Endpoint POST /api/auth/register implementado
+- [ ] Validación de email y contraseña funciona
+- [ ] Email de verificación se envía correctamente
+- [ ] Unit tests: 80%+ coverage
+- [ ] Integration tests: Todos scenarios pasan
+- [ ] Code review aprobado por 2 devs
+- [ ] SDD compliance: 100%
+- [ ] Documentación API actualizada
+- [ ] No hay regressions en otras historias
+
+## 🔗 Relaciones
+
+**Depends On:**
+
+- ECOM-1 (Epic)
+- INFRA-6 (Email service setup)
+
+**Related To:**
+
+- ECOM-11 (Login - usa estos datos)
+- ECOM-12 (Password reset - usa este email)
+
+**Blocks:**
+
+- ECOM-11 (No se puede login sin registro)
+
+## 📝 Notas Técnicas
+
+- Usar HTTPS para formulario de registro
+- Password strength meter en UI
+- Enviar email de verificación asincronamente
+- Considerar GDPR compliance
+- A/B test: social login en fase 2
+
+## ⏱️ Estimación
+
+- Dev Time: 5h (pairing 2 devs)
+- Code Review: 1h
+- Testing: 1h
+- Deployment: 0.5h
+- **Total**: 7.5h ~ 8 story points
+
+```
+
+**Flujo de Historia:**
+
+```
+
+┌──────────────────────────────────────────┐
+│ STORY LIFECYCLE │
+├──────────────────────────────────────────┤
+│ │
+│ 1. CREATION │
+│ ├─ PM crea historia en Jira │
+│ ├─ Escribir user story completa │
+│ ├─ Definir acceptance criteria │
+│ └─ Status: BACKLOG │
+│ │
+│ 2. REFINEMENT (Sprint Planning) │
+│ ├─ Tech Lead estima story points │
+│ ├─ Asignar a desarrollador │
+│ ├─ Crear branch feat/JIRA-XXX │
+│ └─ Status: READY_FOR_DEVELOPMENT │
+│ │
+│ 3. DEVELOPMENT │
+│ ├─ Developer crea rama │
+│ ├─ Implementa feature │
+│ ├─ Escribe tests (80%+ coverage) │
+│ ├─ Commit regularmente │
+│ └─ Status: IN_DEVELOPMENT │
+│ │
+│ 4. CODE REVIEW │
+│ ├─ Crear Pull Request │
+│ ├─ Assign 2 reviewers │
+│ ├─ Responder comments │
+│ ├─ Fix requested changes │
+│ └─ Status: IN_REVIEW │
+│ │
+│ 5. APPROVAL │
+│ ├─ 2+ reviewers aprueban │
+│ ├─ All CI/CD checks pasan │
+│ ├─ Merge a develop │
+│ └─ Status: APPROVED │
+│ │
+│ 6. TESTING │
+│ ├─ QA ejecuta test scenarios │
+│ ├─ Testing en staging env │
+│ ├─ Performance check │
+│ ├─ Regression testing │
+│ └─ Status: TESTED │
+│ │
+│ 7. DEPLOYMENT │
+│ ├─ Deploy a producción │
+│ ├─ Health checks │
+│ ├─ Monitoring activado │
+│ └─ Status: DONE ✅ │
+│ │
+│ 8. CLOSE │
+│ ├─ Resolver comentarios finales │
+│ ├─ Actualizar docs │
+│ └─ Status: CLOSED │
+│ │
+└──────────────────────────────────────────┘
+
+```
+
+---
+
+#### 3️⃣ TAREAS / Tasks
+
+**¿Qué es?**
+- Trabajo técnico o administrativo sin valor directo del usuario
+- Tamaño pequeño: 2-5 puntos de historia
+- No tiene "user story" - es actividad técnica
+- Puede ser independiente o subtarea de historia
+
+**Cuándo Crear:**
+```
+
+✅ CREAR TAREA CUANDO:
+
+- Trabajo técnico puro (refactor, setup)
+- Tarea administrativa (doc, training)
+- Investigación técnica (spike)
+- Deuda técnica necesaria
+- Setup de infraestructura
+
+❌ NO CREAR SI:
+
+- Tiene valor directo para usuario (→ Story)
+- Problema existente (→ Bug)
+- Muy grande (→ Epic)
+
+````
+
+**Estructura Recomendada:**
+
+```markdown
+# INFRA-23 - Setup PostgreSQL Database for Production
+
+## 📋 Descripción / Description
+Configurar instancia de PostgreSQL para entorno de producción con:
+- Backups automáticos
+- Replicación para HA
+- Monitoring y alertas
+- Acceso seguro (VPC, SSL)
+
+## 🎯 Objetivos
+
+### Configuración de Base de Datos
+- [ ] Crear instancia RDS PostgreSQL 14.x
+- [ ] Configurar 2 réplicas para alta disponibilidad
+- [ ] Setup de backups automáticos (diarios, retención 30 días)
+- [ ] Restore testing de backups
+
+### Seguridad
+- [ ] SSL/TLS para todas las conexiones
+- [ ] Configurar VPC security groups
+- [ ] Restrict access a VPN/bastion host solamente
+- [ ] Rotate master password después de setup
+- [ ] Enable audit logging
+
+### Monitoreo
+- [ ] CloudWatch metrics para CPU, memory, connections
+- [ ] Alertas: CPU > 80%, connections > threshold
+- [ ] Query performance insights habilitado
+- [ ] Setup de logs a CloudWatch
+
+### Documentación
+- [ ] Crear runbook para recuperación ante desastre
+- [ ] Documentar connection strings para dev/staging/prod
+- [ ] Crear checklist de mantenimiento mensual
+
+## 📊 Información de la Tarea
+
+| Campo | Valor |
+|-------|-------|
+| **Type** | Task |
+| **Story Points** | 5 |
+| **Priority** | CRITICAL |
+| **Epic Link** | INFRA-1 - Infrastructure Setup |
+| **Assignee** | devops-team |
+
+## 📚 Especificación Técnica
+
+**Ambiente**: AWS Production
+**Timeline**: 1-2 días
+**Blocker**: Necesario antes de deployment de ECOM-1
+
+**Pasos**:
+1. Crear RDS instance en us-east-1
+2. Configure replication to us-west-2
+3. Setup CloudWatch monitoring
+4. Test backup/restore
+5. Security audit
+6. Update connection strings en aplicación
+
+## ✅ Definition of Done (Task)
+
+- [ ] Base de datos creada y accesible
+- [ ] Backups funcionando y testeados
+- [ ] Monitoring alertas configuradas
+- [ ] Runbook de recuperación escrito
+- [ ] Security audit completado
+- [ ] Dev/staging/prod pueden conectarse
+- [ ] Documentation actualizada
+- [ ] Ticket de follow-up para maintenance
+
+## 🔗 Dependencias
+
+**Blocker For:**
+- ECOM-1 (User Management - necesita DB)
+- ECOM-2 (Product Catalog - necesita DB)
+
+**Depends On:**
+- AWS account provisioning
+- VPC setup (INFRA-22)
+
+## ⏱️ Estimación
+
+- Planning & design: 1h
+- Implementation: 3h
+- Testing & validation: 1h
+- **Total**: 5 story points
+
+## 📝 Recursos
+
+- [AWS RDS Setup Guide](link)
+- [PostgreSQL HA Architecture](link)
+- [Infrastructure as Code repo](link)
+````
+
+**Flujo de Tarea:**
+
+```
+┌──────────────────────────────────────────┐
+│ TASK LIFECYCLE                           │
+├──────────────────────────────────────────┤
+│                                          │
+│ 1. IDENTIFICATION                        │
+│    ├─ Tech Lead identifica necesidad     │
+│    ├─ Crear tarea con descripción        │
+│    ├─ Estimar puntos de historia         │
+│    └─ Status: TODO                       │
+│                                          │
+│ 2. ASSIGNMENT                            │
+│    ├─ Asignar a developer/DevOps         │
+│    ├─ Comunicar urgencia/prioridad       │
+│    └─ Status: ASSIGNED                   │
+│                                          │
+│ 3. EXECUTION                             │
+│    ├─ Crear rama si es código            │
+│    ├─ Ejecutar tarea según descripción   │
+│    ├─ Documentar pasos                   │
+│    └─ Status: IN_PROGRESS                │
+│                                          │
+│ 4. VERIFICATION                          │
+│    ├─ Revisar checklist completado       │
+│    ├─ Testing de cambios                 │
+│    ├─ Code review si aplica              │
+│    └─ Status: REVIEW                     │
+│                                          │
+│ 5. CLOSURE                               │
+│    ├─ Actualizar documentación           │
+│    ├─ Communicar completion              │
+│    ├─ Resolver follow-up issues          │
+│    └─ Status: DONE ✅                    │
+│                                          │
+└──────────────────────────────────────────┘
+```
+
+---
+
+#### 4️⃣ BUGS / Bug Reports
+
+**¿Qué es?**
+
+- Problema o comportamiento incorrecto en sistema existente
+- Descripción clara del problema + pasos para reproducir
+- Prioridad basada en impacto (blocker < critical < high < medium < low)
+- Puede tener severidad diferente de prioridad
+
+**Cuándo Crear:**
+
+```
+✅ CREAR BUG CUANDO:
+   - Comportamiento incorrecto observado
+   - No cumple aceptación criteria de feature
+   - Falla no intencional
+   - Error en producción o staging
+   - Regression de funcionalidad previa
+
+❌ NO CREAR SI:
+   - Es feature request (→ Story)
+   - Es tarea técnica (→ Task)
+   - Es documentación incorrecta (→ Doc issue)
+```
+
+**Formato Recomendado:**
+
+````markdown
+# ECOM-150 - User Registration Button Disabled on Firefox
+
+## 🐛 Bug Report
+
+### 📝 Descripción
+
+El botón "Registrarse" se queda deshabilitado (disabled) en Firefox después de
+llenar el formulario de registro con datos válidos. En Chrome y Safari funciona
+correctamente.
+
+### 📊 Severidad & Prioridad
+
+| Atributo           | Valor                                  |
+| ------------------ | -------------------------------------- |
+| **Severity**       | 🔴 CRITICAL (Bloquea feature completa) |
+| **Priority**       | 🔴 BLOCKER (Afecta producción)         |
+| **Affected Users** | ~35% (Firefox users)                   |
+| **Environment**    | Production                             |
+| **Type**           | Bug                                    |
+
+### 🔄 Pasos para Reproducir
+
+**Precondiciones:**
+
+- Browser: Firefox 121+
+- URL: https://app.example.com/register
+- Estado: No autenticado
+
+**Pasos:**
+
+1. Navegar a página de registro
+2. Llenar email: `test@example.com`
+3. Llenar contraseña: `SecurePass123!`
+4. Llenar confirm password: `SecurePass123!`
+5. Observar botón "Registrarse"
+
+**Resultado Esperado:**
+
+- Botón debería estar habilitado (clickeable)
+- Color verde, cursor cambia a pointer
+
+**Resultado Actual:**
+
+- Botón sigue deshabilitado (grayed out)
+- `opacity: 0.5`, `cursor: not-allowed`
+- Imposible hacer click
+
+### 🖼️ Evidencia
+
+**Screenshots:**
+
+- [Chrome - Button Enabled](link-to-screenshot)
+- [Firefox - Button Disabled](link-to-screenshot)
+
+**Video de Reproducción:**
+
+- [Bug Video](link-to-video)
+
+**Browser Console Errors:**
+
+```javascript
+Uncaught TypeError: window.matchMedia is not a function
+  at form-validator.js:45
+  at HTMLFormElement.addEventListener (form-validator.js:1)
+```
+````
+
+### 🔍 Información Técnica
+
+**Environment Details:**
+
+- Firefox Version: 121.0
+- OS: Ubuntu 22.04 LTS
+- Node Version: N/A (Client-side)
+- App Version: v1.2.3
+
+**Browser DevTools Info:**
+
+```
+User Agent: Mozilla/5.0 (X11; Linux x86_64; rv:121.0)
+  Gecko/20100101 Firefox/121.0
+LocalStorage: Empty
+Cookies: Normal
+```
+
+**Related Code Files:**
+
+- `frontend/src/pages/Register.tsx`
+- `frontend/src/components/Form/FormValidator.js` (línea 45)
+- `frontend/src/styles/register.css`
+
+### 📚 Especificación Vinculada
+
+- **Requirements**: [docs/01-requirements.md#registration-ui](link)
+- **Component Spec**: [docs/10-component-architecture.md#form-components](link)
+
+### 🔗 Relaciones
+
+**Related Issues:**
+
+- ECOM-10 (Feature: User Registration)
+- ECOM-156 (Similar: Button disabled in Safari iOS)
+
+**Blocks:**
+
+- ECOM-1 (Epic - Cannot release without fixing)
+
+**Similar Issues:**
+
+- BROWSER-234 (matchMedia not supported)
+
+### 👥 Información del Reporter
+
+| Campo              | Valor               |
+| ------------------ | ------------------- |
+| **Reporter**       | qa-team@company.com |
+| **Found In**       | Production          |
+| **Date Reported**  | 2024-12-16 10:30 AM |
+| **First Seen**     | 2024-12-15 14:00 PM |
+| **Last Confirmed** | 2024-12-16 11:45 AM |
+
+### 📊 Impact Analysis
+
+**Affected Users**:
+
+- ~35% (Firefox market share)
+- Approximately 2,500 potential users
+
+**Business Impact**:
+
+- Cannot register on Firefox
+- Loss of potential customers
+- Support tickets increasing
+
+**Priority Justification**:
+
+- Blocker: Core feature completely broken
+- Production: Users cannot register
+- Revenue Impact: Potential sales loss
+
+### ✅ Definition of Done (Bug Fix)
+
+- [ ] Root cause identificada
+- [ ] Fix implementado
+- [ ] Tested en Firefox 121+ (y otros browsers)
+- [ ] Code review aprobado
+- [ ] Unit tests agregados para prevenir regression
+- [ ] Manual testing completado
+- [ ] QA sign-off
+- [ ] Deployed a staging
+- [ ] Deployed a producción
+- [ ] Monitored por 24h
+- [ ] Cerrado
+
+### 🔄 Workaround (Temporal)
+
+Mientras se arregla, usuarios pueden:
+
+1. Usar Chrome, Safari o Edge
+2. Usar Firefox en modo privado (no siempre funciona)
+3. Disabilitar extensiones (puede ayudar)
+
+### 📝 Notas Técnicas
+
+**Hipótesis de Root Cause:**
+
+- `window.matchMedia` no está disponible en Firefox
+- Polyfill faltante para form-validator.js
+- CSS media queries evaluadas en JS incorrecto
+
+**Investigación Necesaria:**
+
+- Revisar form-validator.js línea 45
+- Check si polyfill está cargado
+- Test en Firefox developer edition
+
+**Posibles Soluciones:**
+
+1. Add matchMedia polyfill
+2. Use try-catch en JavaScript
+3. Refactor form validation lógica
+
+### 🏷️ Labels
+
+`frontend` `bug` `critical` `browser-compatibility` `form-validation`
+
+### ⏱️ Estimación
+
+- Investigation: 0.5h
+- Fix: 1h
+- Testing: 1h
+- Deployment: 0.5h
+- **Total**: 3 story points
+
+### 🎯 Acceptance Criteria
+
+- [ ] Botón "Registrarse" habilitado en Firefox
+- [ ] Funciona en Firefox 115+
+- [ ] No hay console errors
+- [ ] Botón clickeable en todos los browsers
+- [ ] Visual consistency en todos browsers
+
+```
+
+**Flujo de Bug:**
+
+```
+
+┌──────────────────────────────────────────┐
+│ BUG LIFECYCLE │
+├──────────────────────────────────────────┤
+│ │
+│ 1. REPORTING │
+│ ├─ QA/User reporta bug │
+│ ├─ Crear issue con detalles │
+│ ├─ Agregar screenshots/videos │
+│ └─ Status: NEW │
+│ │
+│ 2. TRIAGE │
+│ ├─ Tech Lead revisa reproducibilidad │
+│ ├─ Asignar severidad & prioridad │
+│ ├─ Asignar investigador │
+│ └─ Status: TRIAGED │
+│ │
+│ 3. INVESTIGATION │
+│ ├─ Dev reproduce el bug │
+│ ├─ Identificar root cause │
+│ ├─ Documentar findings │
+│ └─ Status: INVESTIGATING │
+│ │
+│ 4. FIX IMPLEMENTATION │
+│ ├─ Crear rama fix/JIRA-XXX │
+│ ├─ Implementar solución │
+│ ├─ Escribir regression tests │
+│ ├─ Commit con referencia a issue │
+│ └─ Status: IN_PROGRESS │
+│ │
+│ 5. CODE REVIEW │
+│ ├─ Crear PR │
+│ ├─ Assign 2 reviewers │
+│ ├─ Responder feedback │
+│ ├─ Approvals obtenidos │
+│ └─ Status: REVIEW │
+│ │
+│ 6. TESTING │
+│ ├─ QA reproduce con fix │
+│ ├─ Test en todos browsers/OS │
+│ ├─ Regression testing │
+│ ├─ Performance check │
+│ └─ Status: TESTING │
+│ │
+│ 7. DEPLOYMENT │
+│ ├─ Merge a develop │
+│ ├─ Deploy a staging │
+│ ├─ Final QA check │
+│ ├─ Deploy a producción │
+│ └─ Status: DEPLOYED │
+│ │
+│ 8. VERIFICATION │
+│ ├─ Monitor logs por errores │
+│ ├─ 24h monitoring │
+│ ├─ QA final verification │
+│ └─ Status: VERIFIED ✅ │
+│ │
+│ 9. CLOSURE │
+│ ├─ Actualizar documentación │
+│ ├─ Link a related issues │
+│ ├─ Lessons learned │
+│ └─ Status: CLOSED │
+│ │
+└──────────────────────────────────────────┘
+
+```
+
+---
+
+## �🏆 Mejores Prácticas / Best Practices
 
 ### 1. Nomenclatura de Ramas y Commits
 
 ```
+
 BRANCHES
 ────────
-Discovery:      analysis/JIRA-XXX-descriptive-name
-Feature:        feat/JIRA-XXX-descriptive-name
-Bug Fix:        fix/JIRA-XXX-issue-description
-Hotfix:         hotfix/JIRA-XXX-critical-issue
-Refactor:       refactor/JIRA-XXX-component-name
+Discovery: analysis/JIRA-XXX-descriptive-name
+Feature: feat/JIRA-XXX-descriptive-name
+Bug Fix: fix/JIRA-XXX-issue-description
+Hotfix: hotfix/JIRA-XXX-critical-issue
+Refactor: refactor/JIRA-XXX-component-name
 
 COMMITS
 ───────
@@ -395,7 +1239,8 @@ git commit -m "feat(PROJ-123): Implement user authentication
 Spec: docs/02-architecture.md#security
 Tests: 85% coverage
 "
-```
+
+````
 
 ### 2. Vinculación SDD ↔ Jira
 
@@ -421,7 +1266,7 @@ Tests: 85% coverage
 - [ ] Tests con 55%+ coverage
 - [ ] Code review aprobado
 - [ ] Documentación actualizada
-```
+````
 
 ### 3. Estados de Cumplimiento
 
@@ -751,6 +1596,7 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
 ### Fase 1: Preparación (1-2 semanas)
 
 - [ ] **Jira Setup**
+
   - [ ] Crear proyecto [PROYECTO]
   - [ ] Definir Epics principales
   - [ ] Crear 5-10 campos personalizados
@@ -758,6 +1604,7 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
   - [ ] Establecer Definition of Done
 
 - [ ] **SDD Repository**
+
   - [ ] Clonar sdd-templates repo
   - [ ] Personalizar con [PLACEHOLDERS]
   - [ ] Crear branch `docs/sdd-setup`
@@ -766,6 +1613,7 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
   - [ ] Crear `02-architecture.md` inicial
 
 - [ ] **Entrenamiento**
+
   - [ ] Training session 1: SDD metodología (2h)
   - [ ] Training session 2: Jira workflow (2h)
   - [ ] Training session 3: Hands-on practice (3h)
@@ -781,17 +1629,20 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
 ### Fase 2: Piloto (2-4 semanas)
 
 - [ ] **Pilot Team**
+
   - [ ] Seleccionar 3-5 devs para piloto
   - [ ] Asignar pequeño feature como prueba
   - [ ] Usar workflow SDD completo
 
 - [ ] **First Feature**
+
   - [ ] Track 1: Especificar feature
   - [ ] Track 2: Implementar
   - [ ] Track 3: Deploy a staging
   - [ ] Retrospective y ajustes
 
 - [ ] **Métricas**
+
   - [ ] Medir tiempo spec → implementation
   - [ ] Contar PRs rechazadas por specs mismatch
   - [ ] Velocidad de development
@@ -806,11 +1657,13 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
 ### Fase 3: Rollout (1-2 semanas)
 
 - [ ] **Full Team**
+
   - [ ] Training para todo el equipo
   - [ ] Suministrar acceso a Jira
   - [ ] Asignar roles/permisos
 
 - [ ] **Primer Sprint/Ciclo**
+
   - [ ] Ejecutar workflow completo
   - [ ] Monitorear adoption
   - [ ] Resolver bloqueadores
@@ -823,12 +1676,14 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
 ### Fase 4: Optimización Continua (Ongoing)
 
 - [ ] **Monthly Reviews**
+
   - [ ] Revisar métricas
   - [ ] Recolectar feedback
   - [ ] Ajustar workflows
   - [ ] Actualizar documentación
 
 - [ ] **Automation**
+
   - [ ] Auto-crear subtasks
   - [ ] Auto-actualizar status
   - [ ] Auto-generar reports
@@ -1038,6 +1893,7 @@ Esta guía proporciona:
 - 🏗️ Architecture Template: `sdd-templates/shared/02-architecture.md`
 - 📊 Progress Tracking: `sdd-templates/shared/tracking/00-progress-overview.md`
 - 🐛 Issues Log: `sdd-templates/shared/tracking/03-issues-log.md`
+- **🎯 Best Practices Detalladas**: [best-practices-issues.md](best-practices-issues.md) - Guía completa sobre cómo crear Épicas, Historias, Tareas y Bugs
 
 ### Contacto y Soporte
 
