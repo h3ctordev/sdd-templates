@@ -765,7 +765,7 @@ TOTAL OVERHEAD: 15-20% inicialmente → 5-10% estable
   - [ ] Crear `01-requirements.md` inicial
   - [ ] Crear `02-architecture.md` inicial
 
-- [ ] **Entrenamienk**
+- [ ] **Entrenamiento**
   - [ ] Training session 1: SDD metodología (2h)
   - [ ] Training session 2: Jira workflow (2h)
   - [ ] Training session 3: Hands-on practice (3h)
